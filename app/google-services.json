@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "740068093867",
+    "project_id": "mywallet-nitesh",
+    "storage_bucket": "mywallet-nitesh.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:740068093867:android:062b6c96439c67c8d32cee",
+        "android_client_info": {
+          "package_name": "xcom.niteshray.apps.mywallet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "740068093867-5q9voq5b1e49ocs54t8j79o3loovd56b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "xcom.niteshray.apps.mywallet",
+            "certificate_hash": "288fd392c34e0eb456802761d0ad6563bfa5e6c8"
+          }
+        },
+        {
+          "client_id": "740068093867-b71l7fh4k61r8s46cjsg0sodr3jui5lo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEPn-Z8fBcF0EdaNFsoxCCeIMngTaRleI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "740068093867-b71l7fh4k61r8s46cjsg0sodr3jui5lo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
