@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import xcom.niteshray.apps.mywallet.R
 import xcom.niteshray.apps.mywallet.databinding.ActivitySignInBinding
+import xcom.niteshray.apps.mywallet.ui.main.MainActivity
 
 
 class SignInActivity : AppCompatActivity() {
@@ -41,6 +42,10 @@ class SignInActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
+        if (auth.currentUser != null) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
