@@ -1,5 +1,6 @@
 package xcom.niteshray.apps.mywallet.ui.Fragment
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -15,10 +16,12 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import com.github.mikephil.charting.utils.ColorTemplate
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import xcom.niteshray.apps.mywallet.R
-import xcom.niteshray.apps.mywallet.data.RecentActivity
+import xcom.niteshray.apps.mywallet.data.ExpenseData
 import xcom.niteshray.apps.mywallet.databinding.FragmentHomeBinding
+import xcom.niteshray.apps.mywallet.ui.AddExpenseActivity
 
 class HomeFragment : Fragment() {
 
@@ -27,6 +30,11 @@ class HomeFragment : Fragment() {
 
     private lateinit var recentAdapter: RecentAdapter
 
+    private  val list = ArrayList<ExpenseData>()
+    val pieEntries = ArrayList<PieEntry>()
+
+    private val currentUser = FirebaseAuth.getInstance().currentUser?.uid
+    private var dbRef = FirebaseFirestore.getInstance().collection("Users").document(currentUser.toString()).collection("expenses")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,11 +45,21 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        pieChart()
 
-        val list = ArrayList<RecentActivity>()
-        for (i in 1..10) {
-            list.add(RecentActivity("Food & Drinks","17-10-2025",3000))
+
+        binding.btnFab.setOnClickListener {
+            val intent = Intent(requireContext(), AddExpenseActivity::class.java)
+            startActivity(intent)
+        }
+
+        dbRef.get().addOnSuccessListener { documents ->
+            for (document in documents){
+                val expense = document.toObject(ExpenseData::class.java)
+                pieEntries.add(PieEntry(expense.amount.toFloat(), expense.cateroryName))
+                recentAdapter.notifyDataSetChanged()
+                list.add(expense)
+            }
+            pieChart()
         }
 
         binding.rec.layoutManager = LinearLayoutManager(requireContext())
@@ -51,17 +69,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun pieChart(){
-        val pieEntries = ArrayList<PieEntry>()
-        pieEntries.add(PieEntry(1200f, "Food"))
-        pieEntries.add(PieEntry(800f, "Transport"))
-        pieEntries.add(PieEntry(500f, "Entertainment"))
-        pieEntries.add(PieEntry(1500f, "Shopping"))
-        pieEntries.add(PieEntry(1000f, "Bills"))
-        pieEntries.add(PieEntry(300f, "Healthcare"))
-        pieEntries.add(PieEntry(700f, "Education"))
-        pieEntries.add(PieEntry(600f, "Miscellaneous"))
-
-
 
         val TotalExpense = pieEntries.sumOf { it.value.toInt() }
         val pieDataSet = PieDataSet(pieEntries, "")

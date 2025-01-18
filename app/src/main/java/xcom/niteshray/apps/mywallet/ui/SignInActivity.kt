@@ -2,6 +2,8 @@ package xcom.niteshray.apps.mywallet.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -40,12 +42,17 @@ class SignInActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.BtnSignin.visibility = View.GONE
 
         auth = FirebaseAuth.getInstance()
-        if (auth.currentUser != null) {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (auth.currentUser != null) {
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }else{
+
+            }
+        },3000)
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
