@@ -7,4 +7,6 @@ data class User(
     val photoUrl: String,
     val selectedCurrency: String,
     val avalableAmount : Int
-)
+){
+    constructor() : this("", "", "", "", "", 0)
+}

@@ -13,6 +13,9 @@
         android:theme="@style/Theme.MyWallet"
         tools:targetApi="31">
         <activity
+            android:name=".ui.AddMoneyActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.AddExpenseActivity"
             android:exported="false" />
         <activity
@@ -30,7 +33,7 @@
         </activity>
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
     </application>
 
 </manifest>

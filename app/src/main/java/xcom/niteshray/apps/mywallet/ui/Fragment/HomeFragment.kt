@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.data.Entry
@@ -20,8 +21,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import xcom.niteshray.apps.mywallet.R
 import xcom.niteshray.apps.mywallet.data.ExpenseData
+import xcom.niteshray.apps.mywallet.data.User
 import xcom.niteshray.apps.mywallet.databinding.FragmentHomeBinding
 import xcom.niteshray.apps.mywallet.ui.AddExpenseActivity
+import xcom.niteshray.apps.mywallet.ui.AddMoneyActivity
 
 class HomeFragment : Fragment() {
 
@@ -30,11 +33,12 @@ class HomeFragment : Fragment() {
 
     private lateinit var recentAdapter: RecentAdapter
 
+    private var selectedCurrent = ""
     private  val list = ArrayList<ExpenseData>()
     val pieEntries = ArrayList<PieEntry>()
 
     private val currentUser = FirebaseAuth.getInstance().currentUser?.uid
-    private var dbRef = FirebaseFirestore.getInstance().collection("Users").document(currentUser.toString()).collection("expenses")
+    private var dbRef = FirebaseFirestore.getInstance().collection("Users").document(currentUser.toString())
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,23 +54,60 @@ class HomeFragment : Fragment() {
         binding.btnFab.setOnClickListener {
             val intent = Intent(requireContext(), AddExpenseActivity::class.java)
             startActivity(intent)
+            requireActivity().finish()
         }
 
-        dbRef.get().addOnSuccessListener { documents ->
+        binding.btnAddMoney.setOnClickListener {
+            val intent = Intent(requireContext(), AddMoneyActivity::class.java)
+            startActivity(intent)
+            requireActivity().finish()
+        }
+        fetchAmount()
+        fetchData()
+    }
+
+    private fun fetchAmount() {
+        dbRef.get().addOnSuccessListener {
+            val user = it.toObject(User::class.java)
+            if (user?.avalableAmount!! < 0){
+                binding.totalAmount.setTextColor(Color.RED)
+            }
+            selectedCurrent = user.selectedCurrency
+            binding.totalAmount.text = user.selectedCurrency+ user?.avalableAmount.toString()
+        }.addOnFailureListener {
+            Toast.makeText(requireContext(),it.message.toString(), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun fetchData(){
+        dbRef.collection("expenses").get().addOnSuccessListener { documents ->
+            val categoryMap = mutableMapOf<String, Float>()
+            list.clear()
             for (document in documents){
                 val expense = document.toObject(ExpenseData::class.java)
-                pieEntries.add(PieEntry(expense.amount.toFloat(), expense.cateroryName))
-                recentAdapter.notifyDataSetChanged()
                 list.add(expense)
+                recentAdapter.notifyDataSetChanged()
+                categoryMap[expense.cateroryName] = categoryMap.getOrDefault(expense.cateroryName, 0f) + expense.amount.toFloat()
             }
+
+            pieEntries.clear()
+            for ((category, totalAmount) in categoryMap) {
+                pieEntries.add(PieEntry(totalAmount, category))
+            }
+
             pieChart()
+            binding.progressBar3.visibility = View.GONE
+            binding.scrollview.visibility = View.VISIBLE
         }
 
         binding.rec.layoutManager = LinearLayoutManager(requireContext())
 
-        recentAdapter = RecentAdapter(list)
+        recentAdapter = RecentAdapter(list,"₹")
         binding.rec.adapter = recentAdapter
+
+
     }
+
 
     private fun pieChart(){
 
@@ -83,7 +124,7 @@ class HomeFragment : Fragment() {
             ContextCompat.getColor(requireContext(), R.color.color8)
         )
 
-        binding.label.text = "All Expenses: $$TotalExpense"
+        binding.label.text = "All Expenses: $selectedCurrent$TotalExpense"
 
         pieDataSet.valueTextColor = Color.WHITE
         pieDataSet.valueTextSize = 16f
@@ -110,11 +151,11 @@ class HomeFragment : Fragment() {
                 val pieEntry = e as PieEntry
                 val label = pieEntry.label
                 val value = pieEntry.value
-                binding.label.text = "$label : $${value.toInt()}"
+                binding.label.text = "$label : $selectedCurrent${value.toInt()}"
 
             }
             override fun onNothingSelected() {
-                binding.label.text = "All Expenses : $$TotalExpense"
+                binding.label.text = "All Expenses : $selectedCurrent$TotalExpense"
             }
         })
     }

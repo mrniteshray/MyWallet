@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import xcom.niteshray.apps.mywallet.R
 import xcom.niteshray.apps.mywallet.data.ExpenseData
 
-class RecentAdapter(private val list: ArrayList<ExpenseData>) : RecyclerView.Adapter<RecentAdapter.ViewHolder>() {
+class RecentAdapter(private val list: ArrayList<ExpenseData>, val selectedCurrent: String) : RecyclerView.Adapter<RecentAdapter.ViewHolder>() {
     class ViewHolder(itemview : View) : RecyclerView.ViewHolder(itemview){
         val categoryName = itemview.findViewById<TextView>(R.id.categoryName)
         val amount : TextView = itemview.findViewById(R.id.amountTv)
@@ -29,7 +29,7 @@ class RecentAdapter(private val list: ArrayList<ExpenseData>) : RecyclerView.Ada
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var current = list[position]
         holder.categoryName.text = current.cateroryName
-        holder.amount.text = "-$"+current.amount.toString()
+        holder.amount.text = "-$selectedCurrent"+current.amount.toString()
         holder.date.text = current.date
         holder.amount.setTextColor(Color.RED)
     }

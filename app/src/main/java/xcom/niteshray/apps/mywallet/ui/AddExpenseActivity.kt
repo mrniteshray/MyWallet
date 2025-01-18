@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import xcom.niteshray.apps.mywallet.R
 import xcom.niteshray.apps.mywallet.data.ExpenseData
+import xcom.niteshray.apps.mywallet.data.User
 import xcom.niteshray.apps.mywallet.databinding.ActivityAddExpenseBinding
 import xcom.niteshray.apps.mywallet.ui.main.MainActivity
 import java.text.SimpleDateFormat
@@ -28,7 +29,7 @@ class AddExpenseActivity : AppCompatActivity() {
     private lateinit var note: String
 
     private val auth = FirebaseAuth.getInstance().currentUser?.uid
-    private val dbRef = FirebaseFirestore.getInstance().collection("Users").document(auth.toString()).collection("expenses")
+    private val dbRef = FirebaseFirestore.getInstance().collection("Users").document(auth.toString())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +56,6 @@ class AddExpenseActivity : AppCompatActivity() {
             note = binding.etNote.text.toString()
             if (note.isNotEmpty() && amountString.isNotEmpty() && category.isNotEmpty()) {
                 saveInfoToDatabse(note, amountString.toInt(), category)
-                Toast.makeText(this, note+" "+amountString+" "+category, Toast.LENGTH_SHORT).show()
             }else{
                 Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show()
             }
@@ -78,9 +78,15 @@ class AddExpenseActivity : AppCompatActivity() {
             note = note,
             id = 0
         )
-        dbRef.add(expense).addOnSuccessListener {
-            startActivity(Intent(this, MainActivity::class.java))
-            Toast.makeText(this, "Expense added successfully", Toast.LENGTH_SHORT).show()
+        dbRef.collection("expenses").add(expense).addOnSuccessListener {
+            dbRef.get().addOnSuccessListener {
+                val user = it.toObject(User::class.java)
+                val totalamount = user?.avalableAmount?.minus(toInt)
+                dbRef.update("avalableAmount", totalamount).addOnSuccessListener {
+                }
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
         }.addOnFailureListener {
             Toast.makeText(this, "Failed to add expense", Toast.LENGTH_SHORT).show()
         }
@@ -134,5 +140,11 @@ class AddExpenseActivity : AppCompatActivity() {
         for (button in buttons) {
             button.setOnClickListener { onNumberButtonClick(button.text.toString()) }
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 }

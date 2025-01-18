@@ -34,10 +34,6 @@ class MainActivity : AppCompatActivity() {
                         .replace(R.id.Fragcontainer, HomeFragment()).commit()
                     true
                 }
-                R.id.bud -> {
-                    supportFragmentManager.beginTransaction().replace(R.id.Fragcontainer, BudgetFragment()).commit()
-                    true
-                }
                 R.id.profile -> {
                     supportFragmentManager.beginTransaction().replace(R.id.Fragcontainer, ProfileFragment()).commit()
 
