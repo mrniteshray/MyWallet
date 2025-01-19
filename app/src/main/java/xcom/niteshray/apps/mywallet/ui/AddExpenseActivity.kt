@@ -84,6 +84,7 @@ class AddExpenseActivity : AppCompatActivity() {
                 val totalamount = user?.avalableAmount?.minus(toInt)
                 dbRef.update("avalableAmount", totalamount).addOnSuccessListener {
                 }
+                Toast.makeText(this, "Expense Added", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }
@@ -93,7 +94,7 @@ class AddExpenseActivity : AppCompatActivity() {
     }
 
     private fun onNumberButtonClick(number: String) {
-        if (amountString.length < 10) { // Limit amount to 10 digits
+        if (amountString.length < 10) {
             amountString += number
             binding.tvAmount.text = "₹$amountString"
         }
@@ -118,7 +119,6 @@ class AddExpenseActivity : AppCompatActivity() {
 
         binding.category.setOnItemClickListener { _, _, position, _ ->
             category = categories[position]
-            Toast.makeText(this, "Selected currency: $category", Toast.LENGTH_SHORT).show()
         }
     }
 

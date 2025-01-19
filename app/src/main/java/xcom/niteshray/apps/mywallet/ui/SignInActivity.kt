@@ -16,15 +16,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import xcom.niteshray.apps.mywallet.R
 import xcom.niteshray.apps.mywallet.databinding.ActivitySignInBinding
 import xcom.niteshray.apps.mywallet.ui.main.MainActivity
-
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var binding : ActivitySignInBinding
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var auth: FirebaseAuth
+    private var firestore = FirebaseFirestore.getInstance()
     private val googleSignInLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -45,14 +46,16 @@ class SignInActivity : AppCompatActivity() {
         binding.BtnSignin.visibility = View.GONE
 
         auth = FirebaseAuth.getInstance()
-        Handler(Looper.getMainLooper()).postDelayed({
+
             if (auth.currentUser != null) {
+                Handler(Looper.getMainLooper()).postDelayed({
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
+                },2000)
             }else{
-
+                binding.BtnSignin.visibility = View.VISIBLE
             }
-        },3000)
+
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -78,11 +81,26 @@ class SignInActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     binding.progressBar.visibility = View.GONE
-                    startActivity(Intent(this, ProfileSetupActivity::class.java))
-                    finish()
+                    userExistorNot()
                 } else {
                     Log.w("SignInActivity", "signInWithCredential:failure", task.exception)
                     Toast.makeText(this, "Authentication Failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    private fun userExistorNot() {
+        val currentuser = FirebaseAuth.getInstance().currentUser
+        firestore.collection("Users")
+            .document(currentuser?.uid.toString())
+            .get()
+            .addOnSuccessListener {
+                if (it.exists()) {
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
+                }else{
+                    startActivity(Intent(this, ProfileSetupActivity::class.java))
+                    finish()
                 }
             }
     }

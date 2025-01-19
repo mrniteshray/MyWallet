@@ -34,6 +34,7 @@ class ProfileSetupActivity : AppCompatActivity() {
             insets
         }
 
+
         Glide.with(this)
             .load(currentuser?.photoUrl)
             .error(R.drawable.google_icon)
@@ -43,7 +44,10 @@ class ProfileSetupActivity : AppCompatActivity() {
             binding.progressBar2.visibility = View.VISIBLE
             val availableAmount : Int = binding.amount.text.toString().toInt()
             if (selectedCurrency.isNotEmpty() && availableAmount > 0 ) {
-                saveUserToFirebase(currentuser?.uid.toString(),currentuser?.displayName,currentuser?.email,currentuser?.photoUrl.toString(),selectedCurrency,availableAmount)
+                if (selectedCurrency == "INR - Indian Rupee") {
+                    selectedCurrency = "₹"
+                    saveUserToFirebase(currentuser?.uid.toString(),currentuser?.displayName,currentuser?.email,currentuser?.photoUrl.toString(),selectedCurrency,availableAmount)
+                }
             }else{
                 binding.progressBar2.visibility = View.GONE
                 if (selectedCurrency.isEmpty()) {
