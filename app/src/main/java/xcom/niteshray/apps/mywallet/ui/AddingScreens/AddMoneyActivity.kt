@@ -1,4 +1,4 @@
-package xcom.niteshray.apps.mywallet.ui
+package xcom.niteshray.apps.mywallet.ui.AddingScreens
 
 import android.content.Intent
 import android.os.Bundle

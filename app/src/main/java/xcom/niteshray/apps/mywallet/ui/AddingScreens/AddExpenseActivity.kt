@@ -1,9 +1,7 @@
-package xcom.niteshray.apps.mywallet.ui
+package xcom.niteshray.apps.mywallet.ui.AddingScreens
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -18,7 +16,6 @@ import xcom.niteshray.apps.mywallet.data.User
 import xcom.niteshray.apps.mywallet.databinding.ActivityAddExpenseBinding
 import xcom.niteshray.apps.mywallet.ui.main.MainActivity
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.Calendar
 import java.util.Locale
 

@@ -113,6 +113,17 @@
                         android:text="All Expenses"
                         android:textSize="20sp" />
 
+                    <TextView
+                        android:id="@+id/textView6"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="serif"
+                        android:gravity="center"
+                        android:text="No Data Available"
+                        android:textColor="@color/light_black"
+                        android:textSize="20sp"
+                        android:visibility="visible" />
+
                     <com.github.mikephil.charting.charts.PieChart
                         android:id="@+id/pieChart"
                         android:layout_width="250dp"
@@ -163,6 +174,17 @@
                     android:background="@color/white"
                     android:orientation="vertical"
                     android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/textView5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="serif"
+                        android:gravity="center"
+                        android:text="No Recent Activities"
+                        android:textColor="@color/light_black"
+                        android:textSize="20sp"
+                        android:visibility="visible" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rec"

@@ -13,16 +13,16 @@
         android:theme="@style/Theme.MyWallet"
         tools:targetApi="31">
         <activity
-            android:name=".ui.AddMoneyActivity"
+            android:name=".ui.AddingScreens.AddMoneyActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.AddExpenseActivity"
+            android:name=".ui.AddingScreens.AddExpenseActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.ProfileSetupActivity"
+            android:name=".ui.profile.ProfileSetupActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.SignInActivity"
+            android:name=".ui.signin.SignInActivity"
             android:exported="true"
             android:theme="@style/Theme.MyWallet">
             <intent-filter>

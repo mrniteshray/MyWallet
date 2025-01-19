@@ -9,10 +9,12 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import xcom.niteshray.apps.mywallet.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import xcom.niteshray.apps.mywallet.data.User
 import xcom.niteshray.apps.mywallet.databinding.FragmentProfileBinding
-import xcom.niteshray.apps.mywallet.ui.SignInActivity
+import xcom.niteshray.apps.mywallet.ui.signin.SignInActivity
 
 class ProfileFragment : Fragment() {
 
@@ -31,10 +33,12 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        fetchUserData()
+        CoroutineScope(Dispatchers.IO).launch {
+            fetchUserData()
+        }
 
         binding.logout.setOnClickListener {
-            startActivity(Intent(requireContext(),SignInActivity::class.java))
+            startActivity(Intent(requireContext(), SignInActivity::class.java))
             FirebaseAuth.getInstance().signOut()
             requireActivity().finish()
         }

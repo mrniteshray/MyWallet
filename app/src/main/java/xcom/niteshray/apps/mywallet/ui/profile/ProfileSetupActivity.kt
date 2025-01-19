@@ -1,4 +1,4 @@
-package xcom.niteshray.apps.mywallet.ui
+package xcom.niteshray.apps.mywallet.ui.profile
 
 import android.content.Intent
 import android.os.Bundle

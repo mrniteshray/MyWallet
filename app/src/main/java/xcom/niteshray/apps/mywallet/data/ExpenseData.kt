@@ -5,7 +5,8 @@ data class ExpenseData(
     val date: String,
     val amount: Int,
     val note: String = "",
-    val id: Int
+    val id: Int,
+    val timestamp: Long = System.currentTimeMillis()
 ){
     constructor() : this("", "", 0, "", 0)
 }

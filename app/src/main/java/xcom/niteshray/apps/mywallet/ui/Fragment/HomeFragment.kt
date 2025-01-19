@@ -7,8 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.PieData
@@ -21,21 +21,19 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import xcom.niteshray.apps.mywallet.R
 import xcom.niteshray.apps.mywallet.data.ExpenseData
-import xcom.niteshray.apps.mywallet.data.User
 import xcom.niteshray.apps.mywallet.databinding.FragmentHomeBinding
-import xcom.niteshray.apps.mywallet.ui.AddExpenseActivity
-import xcom.niteshray.apps.mywallet.ui.AddMoneyActivity
+import xcom.niteshray.apps.mywallet.domain.viewModels.HomeViewModel
+import xcom.niteshray.apps.mywallet.ui.AddingScreens.AddExpenseActivity
+import xcom.niteshray.apps.mywallet.ui.AddingScreens.AddMoneyActivity
 
 class HomeFragment : Fragment() {
 
     private lateinit var _binding: FragmentHomeBinding
     private val binding get() = _binding!!
-
     private lateinit var recentAdapter: RecentAdapter
-
     private var selectedCurrent = ""
-    private  val list = ArrayList<ExpenseData>()
-    val pieEntries = ArrayList<PieEntry>()
+
+    private val homeViewModel = HomeViewModel()
 
     private val currentUser = FirebaseAuth.getInstance().currentUser?.uid
     private var dbRef = FirebaseFirestore.getInstance().collection("Users").document(currentUser.toString())
@@ -62,54 +60,48 @@ class HomeFragment : Fragment() {
             startActivity(intent)
             requireActivity().finish()
         }
-        fetchAmount()
-        fetchData()
-    }
-
-    private fun fetchAmount() {
-        dbRef.get().addOnSuccessListener {
-            val user = it.toObject(User::class.java)
+        homeViewModel.fetchUserData()
+        homeViewModel.userData.observe(viewLifecycleOwner, Observer { user ->
+            binding.scrollview.visibility = View.VISIBLE
+            binding.progressBar3.visibility = View.GONE
             if (user?.avalableAmount!! < 0){
                 binding.totalAmount.setTextColor(Color.RED)
             }
-            selectedCurrent = user.selectedCurrency
-            binding.totalAmount.text = user.selectedCurrency+ user?.avalableAmount.toString()
-        }.addOnFailureListener {
-            Toast.makeText(requireContext(),it.message.toString(), Toast.LENGTH_SHORT).show()
-        }
-    }
+            binding.totalAmount.text = user?.selectedCurrency + user?.avalableAmount.toString()
+            selectedCurrent = user?.selectedCurrency.toString()
+        })
 
-    private fun fetchData(){
-        dbRef.collection("expenses").get().addOnSuccessListener { documents ->
-            val categoryMap = mutableMapOf<String, Float>()
-            list.clear()
-            for (document in documents){
-                val expense = document.toObject(ExpenseData::class.java)
-                list.add(expense)
-                recentAdapter.notifyDataSetChanged()
-                categoryMap[expense.cateroryName] = categoryMap.getOrDefault(expense.cateroryName, 0f) + expense.amount.toFloat()
+       homeViewModel.fetchExpenseData()
+        homeViewModel.expenseList.observe(viewLifecycleOwner, Observer {
+            if (it.isEmpty()){
+                binding.textView5.visibility = View.VISIBLE
+                binding.rec.visibility = View.GONE
+            }else{
+                binding.textView5.visibility = View.GONE
+                binding.rec.visibility = View.VISIBLE
             }
+            recentAdapter = RecentAdapter(it,"₹")
+            binding.rec.layoutManager = LinearLayoutManager(requireContext())
+            binding.rec.adapter = recentAdapter
 
-            pieEntries.clear()
-            for ((category, totalAmount) in categoryMap) {
-                pieEntries.add(PieEntry(totalAmount, category))
+        })
+
+        homeViewModel.pieEntriesLiveData.observe(viewLifecycleOwner, Observer { pieEntries ->
+            if (pieEntries.isEmpty()){
+                binding.pieChart.visibility = View.GONE
+                binding.textView6.visibility = View.VISIBLE
+            }else{
+                binding.pieChart.visibility = View.VISIBLE
+                binding.textView6.visibility = View.GONE
             }
-
-            pieChart()
-            binding.progressBar3.visibility = View.GONE
-            binding.scrollview.visibility = View.VISIBLE
-        }
-
-        binding.rec.layoutManager = LinearLayoutManager(requireContext())
-
-        recentAdapter = RecentAdapter(list,"₹")
-        binding.rec.adapter = recentAdapter
-
-
+            pieChart(pieEntries)
+        })
     }
 
 
-    private fun pieChart(){
+
+
+    private fun pieChart(pieEntries: List<PieEntry>){
 
         val TotalExpense = pieEntries.sumOf { it.value.toInt() }
         val pieDataSet = PieDataSet(pieEntries, "")

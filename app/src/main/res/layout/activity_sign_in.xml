@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:fitsSystemWindows="true"
-    tools:context=".ui.SignInActivity">
+    tools:context=".ui.signin.SignInActivity">
 
     <TextView
         android:id="@+id/textView"

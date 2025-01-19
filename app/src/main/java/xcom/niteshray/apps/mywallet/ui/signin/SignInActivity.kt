@@ -1,4 +1,4 @@
-package xcom.niteshray.apps.mywallet.ui
+package xcom.niteshray.apps.mywallet.ui.signin
 
 import android.content.Intent
 import android.os.Bundle
@@ -20,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import xcom.niteshray.apps.mywallet.R
 import xcom.niteshray.apps.mywallet.databinding.ActivitySignInBinding
 import xcom.niteshray.apps.mywallet.ui.main.MainActivity
+import xcom.niteshray.apps.mywallet.ui.profile.ProfileSetupActivity
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var binding : ActivitySignInBinding
