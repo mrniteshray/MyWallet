@@ -5,6 +5,12 @@
         android:id="@+id/home"
         android:icon="@drawable/hom"
         android:title=""/>
+
+    <item
+        android:icon="@drawable/budget"
+        android:id="@+id/budget"
+        android:title=""
+        />
     <item
         android:icon="@drawable/profile"
         android:id="@+id/profile"

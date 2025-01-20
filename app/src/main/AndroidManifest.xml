@@ -13,6 +13,9 @@
         android:theme="@style/Theme.MyWallet"
         tools:targetApi="31">
         <activity
+            android:name=".ui.AddingScreens.AddBudgetActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.viewAll.ViewAllActivity"
             android:exported="false" />
         <activity

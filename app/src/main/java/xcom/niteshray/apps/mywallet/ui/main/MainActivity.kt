@@ -29,19 +29,21 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId){
                 R.id.home -> {
-                    supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.Fragcontainer, HomeFragment()).commit()
+                        supportFragmentManager.beginTransaction().replace(R.id.Fragcontainer, HomeFragment()).commit()
+                    true
+                }
+                R.id.budget -> {
+                        supportFragmentManager.beginTransaction().replace(R.id.Fragcontainer, BudgetFragment()).commit()
                     true
                 }
                 R.id.profile -> {
-                    supportFragmentManager.beginTransaction().replace(R.id.Fragcontainer, ProfileFragment()).commit()
-
+                        supportFragmentManager.beginTransaction().replace(R.id.Fragcontainer, ProfileFragment()).commit()
                     true
             }
                 else -> {
                     false
-                }                }
+                }
+            }
             }
 
     }
