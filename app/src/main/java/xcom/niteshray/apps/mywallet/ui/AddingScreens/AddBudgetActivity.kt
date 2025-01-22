@@ -96,6 +96,8 @@ class AddBudgetActivity : AppCompatActivity() {
                                 }
                         }
                 }else{
+                    binding.progressBar7.visibility = View.GONE
+                    binding.tvAmount.text = "₹0"
                     Toast.makeText(this, "Budget already exists for $selectedCategory", Toast.LENGTH_SHORT).show()
                 }
             }

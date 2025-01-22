@@ -1,11 +1,14 @@
 package xcom.niteshray.apps.mywallet.ui.AddingScreens
 
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
@@ -104,7 +107,7 @@ class AddExpenseActivity : AppCompatActivity() {
                     val newSpentAmount = spentAmount?.plus(toInt)
                     val percentage = (newSpentAmount?.div(totalAmount))?.times(100)
                     if (percentage?.toInt()!! > 80){
-                        showNotification()
+                        showNotification(percentage.toInt(),category)
                     }
                     dbRef.collection("budget").document(document.id)
                         .update("spentAmount", newSpentAmount)
@@ -112,8 +115,16 @@ class AddExpenseActivity : AppCompatActivity() {
             }
     }
 
-    private fun showNotification() {
-        //show notification of exceed budget
+    private fun showNotification(percentage : Int,category: String) {
+        val title = "Budget Alert!!"
+        val message = "You have spend $percentage% of your budget for $category"
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val builder = NotificationCompat.Builder(this, "BudgetLimit")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        notificationManager.notify(2, builder.build())
 
     }
 
