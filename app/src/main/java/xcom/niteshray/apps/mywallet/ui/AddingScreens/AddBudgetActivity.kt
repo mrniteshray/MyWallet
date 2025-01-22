@@ -5,15 +5,18 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.viewModels
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import xcom.niteshray.apps.mywallet.R
 import xcom.niteshray.apps.mywallet.data.Budget
 import xcom.niteshray.apps.mywallet.data.ExpenseData
 import xcom.niteshray.apps.mywallet.databinding.ActivityAddBudgetBinding
+import xcom.niteshray.apps.mywallet.domain.viewModels.BudgetViewModel
 import xcom.niteshray.apps.mywallet.ui.Fragment.BudgetAdapter
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -22,12 +25,10 @@ import java.util.Locale
 class AddBudgetActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddBudgetBinding
 
-    private lateinit var budgetAdapter: BudgetAdapter
     private var selectedDuration: String? = null
     private var selectedCategory: String? = null
     private var TotalAmount: String = ""
     private var spendAmount: Double = 0.0
-
     private val auth = FirebaseAuth.getInstance().currentUser
     private val dbRef = FirebaseFirestore.getInstance().collection("Users").document(auth?.uid.toString())
 
@@ -63,29 +64,39 @@ class AddBudgetActivity : AppCompatActivity() {
     }
 
     private fun saveBudget(selectedCategory: String, selectedDuration: String, toDouble: Double) {
-        dbRef.collection("expenses")
-            .whereEqualTo("cateroryName", selectedCategory)
+
+        dbRef.collection("budget")
+            .whereEqualTo("category", selectedCategory)
             .get()
             .addOnSuccessListener {
-                for (document in it) {
-                    val expense = document.toObject(ExpenseData::class.java)
-                    spendAmount += expense.amount
-                }
-                val budget = Budget(
-                    category = selectedCategory,
-                    totalAmont = toDouble,
-                    spentAmount = spendAmount,
-                    duration = selectedDuration,
-                    startDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-                )
+                if (it.isEmpty){
+                    dbRef.collection("expenses")
+                        .whereEqualTo("cateroryName", selectedCategory)
+                        .get()
+                        .addOnSuccessListener {
+                            for (document in it) {
+                                val expense = document.toObject(ExpenseData::class.java)
+                                spendAmount += expense.amount
+                            }
+                            val budget = Budget(
+                                category = selectedCategory,
+                                totalAmont = toDouble,
+                                spentAmount = spendAmount,
+                                duration = selectedDuration,
+                                startDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+                            )
 
-                dbRef.collection("budget")
-                    .add(budget).addOnSuccessListener {
-                    binding.progressBar7.visibility = View.GONE
-                    Toast.makeText(this, "Budget Added", Toast.LENGTH_SHORT).show()
-                    finish()
-                }.addOnFailureListener {
-                    Toast.makeText(this, "Failed to add budget", Toast.LENGTH_SHORT).show()
+                            dbRef.collection("budget")
+                                .add(budget).addOnSuccessListener {
+                                    binding.progressBar7.visibility = View.GONE
+                                    Toast.makeText(this, "Budget Added", Toast.LENGTH_SHORT).show()
+                                    finish()
+                                }.addOnFailureListener {
+                                    Toast.makeText(this, "Failed to add budget", Toast.LENGTH_SHORT).show()
+                                }
+                        }
+                }else{
+                    Toast.makeText(this, "Budget already exists for $selectedCategory", Toast.LENGTH_SHORT).show()
                 }
             }
     }

@@ -10,7 +10,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 import xcom.niteshray.apps.mywallet.R
+import xcom.niteshray.apps.mywallet.data.Budget
 import xcom.niteshray.apps.mywallet.data.ExpenseData
 import xcom.niteshray.apps.mywallet.data.User
 import xcom.niteshray.apps.mywallet.databinding.ActivityAddExpenseBinding
@@ -82,12 +84,37 @@ class AddExpenseActivity : AppCompatActivity() {
                 dbRef.update("avalableAmount", totalamount).addOnSuccessListener {
                 }
                 Toast.makeText(this, "Expense Added", Toast.LENGTH_SHORT).show()
+                updateBugetedAmount(category, toInt)
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }
         }.addOnFailureListener {
             Toast.makeText(this, "Failed to add expense", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun updateBugetedAmount(category: String, toInt: Int) {
+        dbRef.collection("budget")
+            .whereEqualTo("category",category)
+            .get().addOnSuccessListener {
+                for (document in it) {
+                    val budget = document.toObject<Budget>()
+                    val totalAmount = budget.totalAmont
+                    val spentAmount = document.getDouble("spentAmount")
+                    val newSpentAmount = spentAmount?.plus(toInt)
+                    val percentage = (newSpentAmount?.div(totalAmount))?.times(100)
+                    if (percentage?.toInt()!! > 80){
+                        showNotification()
+                    }
+                    dbRef.collection("budget").document(document.id)
+                        .update("spentAmount", newSpentAmount)
+                }
+            }
+    }
+
+    private fun showNotification() {
+        //show notification of exceed budget
+
     }
 
     private fun onNumberButtonClick(number: String) {
