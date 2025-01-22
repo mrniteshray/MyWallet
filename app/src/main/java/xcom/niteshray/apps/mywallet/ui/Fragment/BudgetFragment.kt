@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -55,21 +56,46 @@ class BudgetFragment : Fragment() {
 
         budgetViewModel.budgetList.observe(viewLifecycleOwner, Observer {
             budgetAdapter = BudgetAdapter(it){ itemDelete ->
-                dbRef.collection("budget")
-                    .whereEqualTo("category",itemDelete)
-                    .get()
-                    .addOnSuccessListener {
-                        for (document in it) {
-                            document.reference.delete()
-                        }
-                        budgetViewModel.fetchBudget()
-                        Toast.makeText(requireContext(), "Budget Deleted", Toast.LENGTH_SHORT).show()
-                    }
+                showDeleteDialog(itemDelete)
 
             }
             binding.recyclerView.adapter = budgetAdapter
             budgetAdapter.notifyDataSetChanged()
         })
+    }
+
+    private fun showDeleteDialog(itemDelete: String) {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_confirm_delete, null)
+        val dialogBuilder = AlertDialog.Builder(requireContext()).setView(dialogView)
+
+        val alertDialog = dialogBuilder.create()
+        alertDialog.setCancelable(false)
+
+        val tvDialogTitle = dialogView.findViewById<TextView>(R.id.tvDialogTitle)
+        val tvDialogMessage = dialogView.findViewById<TextView>(R.id.tvDialogMessage)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btnCancel)
+        val btnDelete = dialogView.findViewById<Button>(R.id.btnDelete)
+
+        tvDialogTitle.text = "Delete Budget?"
+        tvDialogMessage.text = "Are you sure you want to delete this budget?"
+
+        btnCancel.setOnClickListener {
+            alertDialog.dismiss()
+        }
+        btnDelete.setOnClickListener {
+            alertDialog.dismiss()
+            dbRef.collection("budget")
+                .whereEqualTo("category",itemDelete)
+                .get()
+                .addOnSuccessListener {
+                    for (document in it) {
+                        document.reference.delete()
+                    }
+                    budgetViewModel.fetchBudget()
+                    Toast.makeText(requireContext(), "Budget Deleted", Toast.LENGTH_SHORT).show()
+                }
+        }
+        alertDialog.show()
     }
 
     override fun onResume() {
