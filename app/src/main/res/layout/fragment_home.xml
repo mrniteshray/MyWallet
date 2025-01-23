@@ -50,7 +50,7 @@
                         android:layout_marginLeft="5dp"
                         android:text="Total Balance"
                         android:textColor="@color/light_black"
-                        android:textSize="26sp" />
+                        android:textSize="25sp" />
 
                     <TextView
                         android:id="@+id/totalAmount"
@@ -59,7 +59,7 @@
                         android:layout_margin="10dp"
                         android:text="$2350"
                         android:textColor="@color/black"
-                        android:textSize="28sp"
+                        android:textSize="26sp"
                         android:textStyle="bold" />
 
                     <com.google.android.material.button.MaterialButton
@@ -72,7 +72,7 @@
                         android:padding="10dp"
                         android:text="Add Money"
                         android:textColor="@color/white"
-                        android:textSize="22sp"
+                        android:textSize="20sp"
                         app:backgroundTint="@color/black"
                         app:cornerRadius="16dp"
                         app:rippleColor="@color/light_gray" />
@@ -103,7 +103,7 @@
                         android:layout_marginTop="5dp"
                         android:text="Overall Expenses"
                         android:textColor="@color/light_black"
-                        android:textSize="18sp" />
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/label"
@@ -111,7 +111,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="All Expenses"
-                        android:textSize="20sp" />
+                        android:textSize="19sp" />
 
                     <TextView
                         android:id="@+id/textView6"
@@ -147,7 +147,7 @@
                     android:layout_weight="1"
                     android:text="Recent Activities"
                     android:textColor="@color/light_black"
-                    android:textSize="22sp" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/viewAll"
@@ -156,7 +156,7 @@
                     android:layout_margin="10dp"
                     android:text="View All"
                     android:textColor="@color/light_black"
-                    android:textSize="22sp" />
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <androidx.cardview.widget.CardView
@@ -167,7 +167,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="15dp"
                 app:cardCornerRadius="26dp"
-                app:cardElevation="10dp">
+                app:cardElevation="12dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
