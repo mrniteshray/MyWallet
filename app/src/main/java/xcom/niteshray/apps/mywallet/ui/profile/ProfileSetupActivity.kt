@@ -23,6 +23,8 @@ class ProfileSetupActivity : AppCompatActivity() {
     private var firestore = FirebaseFirestore.getInstance()
     private var currentuser = FirebaseAuth.getInstance().currentUser
     private var selectedCurrency: String = ""
+    private var selectedCurrencySymbol: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -44,10 +46,7 @@ class ProfileSetupActivity : AppCompatActivity() {
             binding.progressBar2.visibility = View.VISIBLE
             val availableAmount : Int = binding.amount.text.toString().toInt()
             if (selectedCurrency.isNotEmpty() && availableAmount > 0 ) {
-                if (selectedCurrency == "INR - Indian Rupee") {
-                    selectedCurrency = "₹"
-                    saveUserToFirebase(currentuser?.uid.toString(),currentuser?.displayName,currentuser?.email,currentuser?.photoUrl.toString(),selectedCurrency,availableAmount)
-                }
+                saveUserToFirebase(currentuser?.uid.toString(),currentuser?.displayName,currentuser?.email,currentuser?.photoUrl.toString(),selectedCurrency,availableAmount)
             }else{
                 binding.progressBar2.visibility = View.GONE
                 if (selectedCurrency.isEmpty()) {
@@ -59,13 +58,38 @@ class ProfileSetupActivity : AppCompatActivity() {
         }
 
         binding.textView3.text = "Hello! \n ${currentuser?.displayName}"
-        val currencies = listOf("USD - US Dollar", "EUR - Euro", "INR - Indian Rupee", "JPY - Japanese Yen")
+
+        val currencyMap = mapOf(
+            "USD - US Dollar" to "$",
+            "EUR - Euro" to "€",
+            "INR - Indian Rupee" to "₹",
+            "JPY - Japanese Yen" to "¥",
+            "GBP - British Pound" to "£",
+            "AUD - Australian Dollar" to "A$",
+            "CAD - Canadian Dollar" to "C$",
+            "CHF - Swiss Franc" to "CHF",
+            "CNY - Chinese Yuan" to "¥",
+            "SEK - Swedish Krona" to "kr",
+            "NZD - New Zealand Dollar" to "NZ$",
+            "SGD - Singapore Dollar" to "S$",
+            "HKD - Hong Kong Dollar" to "HK$",
+            "NOK - Norwegian Krone" to "kr",
+            "KRW - South Korean Won" to "₩",
+            "TRY - Turkish Lira" to "₺",
+            "RUB - Russian Ruble" to "₽",
+            "BRL - Brazilian Real" to "R$",
+            "ZAR - South African Rand" to "R",
+            "MXN - Mexican Peso" to "$"
+        )
+
+        val currencies = currencyMap.keys.toList()
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, currencies)
         binding.currencyDropdown.setAdapter(adapter)
 
         binding.currencyDropdown.setOnItemClickListener { _, _, position, _ ->
             selectedCurrency = currencies[position]
+            selectedCurrencySymbol = currencyMap[selectedCurrency].orEmpty()
             Toast.makeText(this, "Selected currency: $selectedCurrency", Toast.LENGTH_SHORT).show()
         }
     }
