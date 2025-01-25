@@ -50,8 +50,7 @@ class AddMoneyActivity : AppCompatActivity() {
                     var user = it.toObject(User::class.java)
                     val totalamount = user?.avalableAmount?.plus(amount)
                     dbref.update("avalableAmount", totalamount).addOnSuccessListener{
-                        startActivity(Intent(this, MainActivity::class.java))
-                        finish()
+
                         Toast.makeText(this, "Money Added To Wallet", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -84,11 +83,5 @@ class AddMoneyActivity : AppCompatActivity() {
         for (button in buttons) {
             button.setOnClickListener { onNumberButtonClick(button.text.toString()) }
         }
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        startActivity(Intent(this, MainActivity::class.java))
-        finish()
     }
 }

@@ -21,6 +21,9 @@ class HomeViewModel : ViewModel() {
     private val _expenseList = MutableLiveData<List<ExpenseData>>()
     val expenseList : LiveData<List<ExpenseData>> get() = _expenseList
 
+    private var _filteredexpenselist = MutableLiveData<List<ExpenseData>>()
+    val filteredlist : LiveData<List<ExpenseData>> get() = _filteredexpenselist
+
     private val _pieEntriesLiveData = MutableLiveData<List<PieEntry>>()
     val pieEntriesLiveData: LiveData<List<PieEntry>> get() = _pieEntriesLiveData
 
@@ -50,10 +53,21 @@ class HomeViewModel : ViewModel() {
                     categoryMap[expense.cateroryName] = categoryMap.getOrDefault(expense.cateroryName, 0f) + expense.amount.toFloat()
                 }
                 _expenseList.postValue(expenseList)
+                _filteredexpenselist.postValue(expenseList)
 
                 val pieEntries = categoryMap.map { PieEntry(it.value, it.key) }
                 _pieEntriesLiveData.postValue(pieEntries)
             }
     }
+
+    fun filteredData(date : String){
+        val expenses = _expenseList.value ?: emptyList()
+        _filteredexpenselist.value = expenses.filter { it.date == date }
+    }
+
+    fun clearFilter(){
+        _filteredexpenselist.value = expenseList.value
+    }
+
 
 }

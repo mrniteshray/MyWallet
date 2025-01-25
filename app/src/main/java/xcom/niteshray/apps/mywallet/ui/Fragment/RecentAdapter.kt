@@ -33,4 +33,9 @@ class RecentAdapter(private val list: List<ExpenseData>, val selectedCurrent: St
         holder.date.text = current.date
         holder.amount.setTextColor(Color.RED)
     }
+
+    fun removeItem(position: Int) {
+        list.toMutableList().removeAt(position)
+        notifyItemRemoved(position)
+    }
 }

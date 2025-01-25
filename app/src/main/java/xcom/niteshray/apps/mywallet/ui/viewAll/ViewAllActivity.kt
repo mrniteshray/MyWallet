@@ -1,14 +1,22 @@
 package xcom.niteshray.apps.mywallet.ui.viewAll
 
+import android.app.DatePickerDialog
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import xcom.niteshray.apps.mywallet.R
 import xcom.niteshray.apps.mywallet.databinding.ActivityViewAllBinding
 import xcom.niteshray.apps.mywallet.domain.viewModels.HomeViewModel
@@ -35,7 +43,7 @@ class ViewAllActivity : AppCompatActivity() {
         }
 
         homeViewModel.fetchExpenseData()
-        homeViewModel.expenseList.observe(this, Observer { expenseList ->
+        homeViewModel.filteredlist.observe(this, Observer { expenseList ->
             binding.progressBar5.visibility = View.GONE
             if (expenseList.isEmpty()){
                 binding.nodata.visibility = View.VISIBLE
@@ -49,5 +57,26 @@ class ViewAllActivity : AppCompatActivity() {
             binding.recyclerView.adapter = recentAdapter
         })
 
+        binding.btnFiltered.setOnClickListener {
+            homeViewModel.clearFilter()
+        }
+
+
+        binding.btnDate.setOnClickListener {
+            openDatePicker()
+        }
+
+    }
+
+    private fun openDatePicker() {
+        val calender = Calendar.getInstance()
+        val year = calender.get(Calendar.YEAR)
+        val month = calender.get(Calendar.MONTH)
+        val day = calender.get(Calendar.DAY_OF_MONTH)
+
+        DatePickerDialog(this,{ _ , selectedyear , selectedmonth,selectedday ->
+            val selectedDate =  String.format("%02d-%02d-%d", selectedday, selectedmonth + 1, selectedyear)
+            homeViewModel.filteredData(selectedDate)
+        },year,month,day).show()
     }
 }
