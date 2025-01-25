@@ -69,5 +69,40 @@ class HomeViewModel : ViewModel() {
         _filteredexpenselist.value = expenseList.value
     }
 
+    fun filterExpensesByMonth(selectedMonthNumber: String) {
+        val allExpenselist = _expenseList.value ?: return
+        if(selectedMonthNumber == "Overall"){
+            updatePieChart(allExpenselist)
+            return
+        }
+
+        val categoryMap = mutableMapOf<String,Float>()
+        val filterExpense = allExpenselist.filter {
+            val expenseMonth = it.date.split("-")[1]
+            selectedMonthNumber == expenseMonth
+        }
+
+        for (expense in filterExpense) {
+            categoryMap[expense.cateroryName] =
+                categoryMap.getOrDefault(expense.cateroryName, 0f) + expense.amount.toFloat()
+        }
+
+        val pieEntries = categoryMap.map { PieEntry(it.value, it.key) }
+        _pieEntriesLiveData.value = pieEntries
+
+
+    }
+
+    private fun updatePieChart(expenses: List<ExpenseData>) {
+        val categoryMap = mutableMapOf<String, Float>()
+        for (expense in expenses) {
+            categoryMap[expense.cateroryName] =
+                categoryMap.getOrDefault(expense.cateroryName, 0f) + expense.amount.toFloat()
+        }
+
+        val pieEntries = categoryMap.map { PieEntry(it.value, it.key) }
+        _pieEntriesLiveData.value = pieEntries
+    }
+
 
 }

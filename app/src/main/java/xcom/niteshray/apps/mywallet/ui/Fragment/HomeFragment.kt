@@ -7,6 +7,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,6 +55,39 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         btnClicks()
+        val monthsMap = mapOf(
+            "Overall" to "Overall",
+            "January" to "01",
+            "February" to "02",
+            "March" to "03",
+            "April" to "04",
+            "May" to "05",
+            "June" to "06",
+            "July" to "07",
+            "August" to "08",
+            "September" to "09",
+            "October" to "10",
+            "November" to "11",
+            "December" to "12"
+        )
+
+        val monthNames = monthsMap.keys.toList()
+        binding.selectMonthPopup.setOnClickListener {
+            val popupMenu = PopupMenu(requireContext(), binding.selectMonthPopup)
+
+            monthNames.forEachIndexed { index, month ->
+                popupMenu.menu.add(0, index, 0, month)
+            }
+
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                binding.selectMonthPopup.text = menuItem.title.toString()
+                val selectedMonthNumber = monthsMap[menuItem.title.toString()] ?: "Select Month"
+                homeViewModel.filterExpensesByMonth(selectedMonthNumber)
+                true
+            }
+
+            popupMenu.show()
+        }
 
         homeViewModel.fetchUserData()
         homeViewModel.userData.observe(viewLifecycleOwner, Observer { user ->
@@ -79,6 +116,8 @@ class HomeFragment : Fragment() {
             binding.rec.adapter = recentAdapter
 
         })
+
+
 
         homeViewModel.pieEntriesLiveData.observe(viewLifecycleOwner, Observer { pieEntries ->
             if (pieEntries.isEmpty()){

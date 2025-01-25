@@ -59,6 +59,7 @@ class ViewAllActivity : AppCompatActivity() {
 
         binding.btnFiltered.setOnClickListener {
             homeViewModel.clearFilter()
+            binding.btnDate.text = "Select Date"
         }
 
 
@@ -76,6 +77,7 @@ class ViewAllActivity : AppCompatActivity() {
 
         DatePickerDialog(this,{ _ , selectedyear , selectedmonth,selectedday ->
             val selectedDate =  String.format("%02d-%02d-%d", selectedday, selectedmonth + 1, selectedyear)
+            binding.btnDate.text = selectedDate
             homeViewModel.filteredData(selectedDate)
         },year,month,day).show()
     }
