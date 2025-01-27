@@ -151,6 +151,11 @@ class HomeFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        homeViewModel.fetchExpenseData()
+        homeViewModel.fetchUserData()
+    }
 
 
 

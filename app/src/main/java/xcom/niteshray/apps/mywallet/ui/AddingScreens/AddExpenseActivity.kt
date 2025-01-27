@@ -88,7 +88,6 @@ class AddExpenseActivity : AppCompatActivity() {
                 }
                 Toast.makeText(this, "Expense Added", Toast.LENGTH_SHORT).show()
                 updateBugetedAmount(category, toInt)
-                startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }
         }.addOnFailureListener {
