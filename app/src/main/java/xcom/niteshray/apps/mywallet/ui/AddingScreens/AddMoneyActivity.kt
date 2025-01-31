@@ -50,7 +50,7 @@ class AddMoneyActivity : AppCompatActivity() {
                     var user = it.toObject(User::class.java)
                     val totalamount = user?.avalableAmount?.plus(amount)
                     dbref.update("avalableAmount", totalamount).addOnSuccessListener{
-
+                        finish()
                         Toast.makeText(this, "Money Added To Wallet", Toast.LENGTH_SHORT).show()
                     }
                 }
