@@ -124,7 +124,6 @@ class AddExpenseActivity : AppCompatActivity() {
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         notificationManager.notify(2, builder.build())
-
     }
 
     private fun onNumberButtonClick(number: String) {

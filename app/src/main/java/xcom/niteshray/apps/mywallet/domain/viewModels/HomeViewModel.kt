@@ -101,6 +101,4 @@ class HomeViewModel : ViewModel() {
         val pieEntries = categoryMap.map { PieEntry(it.value, it.key) }
         _pieEntriesLiveData.value = pieEntries
     }
-
-
 }

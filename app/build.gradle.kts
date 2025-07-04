@@ -2,8 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
-    id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -54,9 +52,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
 
     implementation(libs.firebase.auth)
-    implementation(libs.hilt.android)
     implementation(libs.firebase.firestore.ktx)
-    kapt(libs.hilt.android.compiler)
 
     implementation(libs.play.services.auth)
     implementation(libs.circleimageview)
