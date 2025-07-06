@@ -11,6 +11,8 @@ MyWallet is a personal finance tracking Android app designed to help users effic
 ☁️ **Cloud Storage** - Firestore ensures data persistence across devices.  
 📢 **Notifications** - Alerts when budget usage exceeds 80%.
 
+---
+
 🛠️ **Tech Stack**  
 - **Programming Language**: Kotlin  
 - **UI**: XML  
@@ -19,6 +21,8 @@ MyWallet is a personal finance tracking Android app designed to help users effic
 - **Backend**: Firebase Firestore  
 - **Authentication**: Firebase Authentication (Google Sign-In)  
 - **Notifications**: Firebase Cloud Messaging (FCM)
+
+---
 
 📸 **Screenshots**  
 <img src="https://i.ibb.co/Cs6C4m8V/Screenshot-2025-03-22-14-56-22-83-d2939b943d415392a70535d4a197bfbd-portrait.png" width="300">
